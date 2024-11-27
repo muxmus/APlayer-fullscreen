@@ -1,109 +1,419 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>APlayer Demo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        }
-        .container {
-            max-width: 32rem;
-            margin-left: auto;
-            margin-right: auto;
-            margin-bottom: 150px;
-        }
-        h1 {
-            font-size: 54px;
-            color: #333;
-            margin: 30px 0 10px;
-        }
-        h2 {
-            font-size: 22px;
-            color: #555;
-        }
-        h3 {
-            font-size: 24px;
-            color: #555;
-        }
-        hr {
-            display: block;
-            width: 7rem;
-            height: 1px;
-            margin: 2.5rem 0;
-            background-color: #eee;
-            border: 0;
-        }
-        a {
-            color: #08c;
-            text-decoration: none;
-        }
-        p {
-            font-size: 18px;
-        }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/vconsole/dist/vconsole.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js/dist/hls.min.js"></script>
-    <script src="APlayer.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/color-thief-don@2.0.2/src/color-thief.js"></script>
-</head>
-<body>
-    <div class="container">
-        <h1>APlayer</h1>
-        <h2>Wow, such a beautiful html5 music player</h2>
-        <p>Made by <a href="https://www.anotherhome.net/" target="_blank">DIYgod</a>. Available on <a href="https://github.com/DIYgod/APlayer" target="_blank">GitHub</a>. Licensed MIT.</p>
-        <hr>
-        <h3>Normal</h3>
-        <div id="player1"></div>
-        <p></p>
-        <button onclick="ap1.play()">ap.play()</button>
-        <button onclick="ap1.seek(100)">ap.seek(100)</button>
-        <button onclick="ap1.pause()">ap.pause()</button>
-        <button onclick="ap1.toggle()">ap.toggle()</button>
-        <button onclick="ap1.volume(0.1)">ap.volume(0.1)</button>
-        <button onclick="ap1.addAudio([
-            {
-                name: 'あっちゅ～ま青春!',
-                artist: '七森中☆ごらく部',
-                url: 'https://cn-south-17-aplayer-46154810.oss.dogecdn.com/yuruyuri.mp3',
-                cover: 'https://cn-south-17-aplayer-46154810.oss.dogecdn.com/yuruyuri.jpg'
-            },
-            {
-                name: 'secret base~君がくれたもの~',
-                artist: '茅野愛衣',
-                url: 'https://cn-south-17-aplayer-46154810.oss.dogecdn.com/secretbase.mp3',
-                cover: 'https://cn-south-17-aplayer-46154810.oss.dogecdn.com/secretbase.jpg'
-            },
-            {
-                name: '回レ！雪月花',
-                artist: '小倉唯',
-                url: 'https://cn-south-17-aplayer-46154810.oss.dogecdn.com/snowmoonflowers.mp3',
-                cover: 'https://cn-south-17-aplayer-46154810.oss.dogecdn.com/snowmoonflowers.jpg'
-            }
-        ])">ap.addAudio(...)</button>
-        <button onclick="ap1.destroy()">ap.destroy()</button>
-        <h3>With playlist</h3>
-        <div id="player4" class="aplayer"></div>
-        <p></p>
-        <button onclick="ap4.switchAudio(2)">ap.switchAudio(2)</button>
-        <h3>With lyrics</h3>
-        <div id="player3" class="aplayer"></div>
-        <h3>With playlist and lyrics</h3>
-        <div id="player5" class="aplayer"></div>
-        <h3>Narrow</h3>
-        <div id="player2" class="aplayer"></div>
-        <h3>HLS</h3>
-        <div id="player6" class="aplayer"></div>
-        <div id="player7" class="aplayer"></div>
-        <div id="player8" class="aplayer"></div>
-    </div>
-    <script>
-        if (/mobile/i.test(window.navigator.userAgent)) {
-            new VConsole();
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery"></script>
-    <script src="demo.js"></script>
-</body>
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<meta name="theme-color" content="#8E8CD8">
+		<title>APlayer-fullscreen ~ Demo</title>
+		<link rel="shortcut icon" type="image/x-icon" href="https://img.muxmus.com/icon/favicon.ico">
+		<link rel="stylesheet" href="https://file.muxmus.com/css/APlayer.full-screen.min.css">
+		<script src="https://file.muxmus.com/js/jquery-3.6.0.min.js"></script>
+		<script src="https://file.muxmus.com/js/APlayer.full-screen.min.js"></script>
+	</head>
+	<body>
+		<div id="bgPic"></div>
+		<div id="phone-body">
+			<div id="phone-info">
+				<div id="all">
+					<div id="apPic"></div>
+					<div id="info">
+						<h2 class="wrap" id="apName">
+							<span class="txt">Name</span>
+						</h2>
+						<h4 class="wrap" id="apArtist">
+							<span class="txt">Artist</span>
+						</h4>
+					</div>
+					<div id="progressBar">
+						<div id="barDone"></div>
+						<div id="barCircle"></div>
+						<div id="barDo"></div>
+					</div>
+					<div id="musicTime">
+						<div id="timeDone">00:00</div>
+						<div id="timeTotal">00:00</div>
+					</div>
+					<div id="control">
+						<span id="icon-order">
+							<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32"><path d="M22.667 4l7 6-7 6 7 6-7 6v-4h-3.653l-3.76-3.76 2.827-2.827 2.587 2.587h2v-8h-2l-12 12h-6v-4h4.347l12-12h3.653v-4zM2.667 8h6l3.76 3.76-2.827 2.827-2.587-2.587h-4.347v-4z"></path></svg>
+						</span>
+						<span id="icon-back">
+							<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32"><path d="M25.468 6.947c-0.326-0.172-0.724-0.151-1.030 0.057l-6.438 4.38v-3.553c0-0.371-0.205-0.71-0.532-0.884-0.326-0.172-0.724-0.151-1.030 0.057l-12 8.164c-0.274 0.186-0.438 0.496-0.438 0.827s0.164 0.641 0.438 0.827l12 8.168c0.169 0.115 0.365 0.174 0.562 0.174 0.16 0 0.321-0.038 0.468-0.116 0.327-0.173 0.532-0.514 0.532-0.884v-3.556l6.438 4.382c0.169 0.115 0.365 0.174 0.562 0.174 0.16 0 0.321-0.038 0.468-0.116 0.327-0.173 0.532-0.514 0.532-0.884v-16.333c0-0.371-0.205-0.71-0.532-0.884z"></path></svg>
+						</span>
+						<span id="icon-play">
+							<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 31"><path d="M15.552 15.168q0.448 0.32 0.448 0.832 0 0.448-0.448 0.768l-13.696 8.512q-0.768 0.512-1.312 0.192t-0.544-1.28v-16.448q0-0.96 0.544-1.28t1.312 0.192z"></path></svg>
+						</span>
+						<span id="icon-forward">
+							<svg style="transform:rotate(180deg)" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32"><path d="M25.468 6.947c-0.326-0.172-0.724-0.151-1.030 0.057l-6.438 4.38v-3.553c0-0.371-0.205-0.71-0.532-0.884-0.326-0.172-0.724-0.151-1.030 0.057l-12 8.164c-0.274 0.186-0.438 0.496-0.438 0.827s0.164 0.641 0.438 0.827l12 8.168c0.169 0.115 0.365 0.174 0.562 0.174 0.16 0 0.321-0.038 0.468-0.116 0.327-0.173 0.532-0.514 0.532-0.884v-3.556l6.438 4.382c0.169 0.115 0.365 0.174 0.562 0.174 0.16 0 0.321-0.038 0.468-0.116 0.327-0.173 0.532-0.514 0.532-0.884v-16.333c0-0.371-0.205-0.71-0.532-0.884z"></path></svg>
+						</span>
+						<span id="icon-loop">
+							<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 29 32"><path d="M9.333 9.333h13.333v4l5.333-5.333-5.333-5.333v4h-16v8h2.667v-5.333zM22.667 22.667h-13.333v-4l-5.333 5.333 5.333 5.333v-4h16v-8h-2.667v5.333z"></path></svg>
+						</span>
+					</div>
+					<div id="volumeBar">
+						<span id="icon-volume-down">
+							<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 28 32"><path d="M13.728 6.272v19.456q0 0.448-0.352 0.8t-0.8 0.32-0.8-0.32l-5.952-5.952h-4.672q-0.48 0-0.8-0.352t-0.352-0.8v-6.848q0-0.48 0.352-0.8t0.8-0.352h4.672l5.952-5.952q0.32-0.32 0.8-0.32t0.8 0.32 0.352 0.8z"></path></svg>
+						</span>
+						<div id="volumeBarDone"></div>
+						<div id="volumeBarCircle"></div>
+						<div id="volumeBarDo"></div>
+						<span id="icon-volume-up">
+							<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 28 32"><path d="M13.728 6.272v19.456q0 0.448-0.352 0.8t-0.8 0.32-0.8-0.32l-5.952-5.952h-4.672q-0.48 0-0.8-0.352t-0.352-0.8v-6.848q0-0.48 0.352-0.8t0.8-0.352h4.672l5.952-5.952q0.32-0.32 0.8-0.32t0.8 0.32 0.352 0.8zM20.576 16q0 1.344-0.768 2.528t-2.016 1.664q-0.16 0.096-0.448 0.096-0.448 0-0.8-0.32t-0.32-0.832q0-0.384 0.192-0.64t0.544-0.448 0.608-0.384 0.512-0.64 0.192-1.024-0.192-1.024-0.512-0.64-0.608-0.384-0.544-0.448-0.192-0.64q0-0.48 0.32-0.832t0.8-0.32q0.288 0 0.448 0.096 1.248 0.48 2.016 1.664t0.768 2.528zM25.152 16q0 2.72-1.536 5.056t-4 3.36q-0.256 0.096-0.448 0.096-0.48 0-0.832-0.352t-0.32-0.8q0-0.704 0.672-1.056 1.024-0.512 1.376-0.8 1.312-0.96 2.048-2.4t0.736-3.104-0.736-3.104-2.048-2.4q-0.352-0.288-1.376-0.8-0.672-0.352-0.672-1.056 0-0.448 0.32-0.8t0.8-0.352q0.224 0 0.48 0.096 2.496 1.056 4 3.36t1.536 5.056zM29.728 16q0 4.096-2.272 7.552t-6.048 5.056q-0.224 0.096-0.448 0.096-0.48 0-0.832-0.352t-0.32-0.8q0-0.64 0.704-1.056 0.128-0.064 0.384-0.192t0.416-0.192q0.8-0.448 1.44-0.896 2.208-1.632 3.456-4.064t1.216-5.152-1.216-5.152-3.456-4.064q-0.64-0.448-1.44-0.896-0.128-0.096-0.416-0.192t-0.384-0.192q-0.704-0.416-0.704-1.056 0-0.448 0.32-0.8t0.832-0.352q0.224 0 0.448 0.096 3.776 1.632 6.048 5.056t2.272 7.552z"></path></svg>
+						</span>
+					</div>
+					<span id="icon-lrc">
+						<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32"><path d="M26.667 5.333h-21.333c-0 0-0.001 0-0.001 0-1.472 0-2.666 1.194-2.666 2.666 0 0 0 0.001 0 0.001v-0 16c0 0 0 0.001 0 0.001 0 1.472 1.194 2.666 2.666 2.666 0 0 0.001 0 0.001 0h21.333c0 0 0.001 0 0.001 0 1.472 0 2.666-1.194 2.666-2.666 0-0 0-0.001 0-0.001v0-16c0-0 0-0.001 0-0.001 0-1.472-1.194-2.666-2.666-2.666-0 0-0.001 0-0.001 0h0zM5.333 16h5.333v2.667h-5.333v-2.667zM18.667 24h-13.333v-2.667h13.333v2.667zM26.667 24h-5.333v-2.667h5.333v2.667zM26.667 18.667h-13.333v-2.667h13.333v2.667z"></path></svg>
+					</span>
+					<span id="icon-list">
+						<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 22 32"><path d="M20.8 14.4q0.704 0 1.152 0.48t0.448 1.12-0.48 1.12-1.12 0.48h-19.2q-0.64 0-1.12-0.48t-0.48-1.12 0.448-1.12 1.152-0.48h19.2zM1.6 11.2q-0.64 0-1.12-0.48t-0.48-1.12 0.448-1.12 1.152-0.48h19.2q0.704 0 1.152 0.48t0.448 1.12-0.48 1.12-1.12 0.48h-19.2zM20.8 20.8q0.704 0 1.152 0.48t0.448 1.12-0.48 1.12-1.12 0.48h-19.2q-0.64 0-1.12-0.48t-0.48-1.12 0.448-1.12 1.152-0.48h19.2z"></path></svg>
+					</span>
+					<span id="metadata">ContainerFormat | Codec | BitRate | SamplingRate</span>
+				</div>
+			</div>
+			<div id="phone-aplayer">
+				<div id="aplayer"></div>
+			</div>
+			<div id="phone-metadata">
+				<p id="metadata-name">名称：Name</p>
+				<p id="metadata-artist">作者：Artist</p>
+				<p id="metadata-album">专辑：Album</p>
+				<p id="metadata-filesize">大小：FileSize</p>
+				<p id="metadata-containerformat">容器格式：ContainerFormat</p>
+				<p id="metadata-codec">编码格式：Codec</p>
+				<p id="metadata-bitdepth">位深：BitDepth</p>
+				<p id="metadata-channel">声道：Channel</p>
+				<p id="metadata-duration">时长：Duration</p>
+				<p id="metadata-samplingrate">采样率：SamplingRate</p>
+				<p id="metadata-bitrate">比特率：BitRate</p>
+			</div>
+			<p id="aplayer-lrc-test"></p>
+		</div>
+		<script>
+		const ap = new APlayer({
+			container: document.getElementById("aplayer"),
+			fixed: true,
+			theme: "#8E8CD8",
+			volume: volumeNow,
+			order: "random",
+			lrcType: 3,
+			audio: [{
+				name: "光るなら",
+				artist: "Goose house",
+    			url: "https://share.muxmus.com/APlayer-fullscreen/aac/光るなら - Goose house.m4a",
+    			cover: "https://share.muxmus.com/APlayer-fullscreen/光るなら - Goose house.jpg",
+    			lrc: "https://share.muxmus.com/APlayer-fullscreen/光るなら - Goose house.lrc",
+    			id: "694",
+    			metadata: [{
+        			name: "光るなら (若能绽放光芒) (TV Version)",
+        			artist: "Goose house (グースハウス)",
+        			album: "光るなら (若能绽放光芒)",
+        			filesize: "1562183",
+        			containerformat: "MPEG-4",
+        			codec: "AAC",
+        			channel: 2,
+        			duration: 92.787,
+        			samplingrate: 44100,
+        			bitrate: 132300
+        		}]
+    		}, {
+        		name: "葵橋",
+    			artist: "酸欠少女さユり",
+    			url: "https://share.muxmus.com/APlayer-fullscreen/aac/葵橋 - 酸欠少女さユり.m4a",
+    			cover: "https://share.muxmus.com/APlayer-fullscreen/葵橋 - 酸欠少女さユり.jpg",
+    			lrc: "https://share.muxmus.com/APlayer-fullscreen/葵橋 - 酸欠少女さユり.lrc",
+    			id: "406",
+    			metadata: [{
+        			name: "葵橋",
+        			artist: "酸欠少女さユり",
+        			album: "葵橋",
+        			filesize: "3701643",
+        			containerformat: "MPEG-4",
+        			codec: "AAC",
+        			channel: 2,
+        			duration: 229.552,
+        			samplingrate: 44100,
+        			bitrate: 127374
+      			}]
+    		}, {
+    			name: "前前前世",
+    			artist: "RADWIMPS",
+    			url: "https://share.muxmus.com/APlayer-fullscreen/aac/前前前世 - RADWIMPS.m4a",
+    			cover: "https://share.muxmus.com/APlayer-fullscreen/前前前世 - RADWIMPS.jpg",
+    			lrc: "https://share.muxmus.com/APlayer-fullscreen/前前前世 - RADWIMPS.lrc",
+    			id: "389",
+    			metadata: [{
+    				name: "前前前世",
+        			artist: "RADWIMPS",
+        			album: "君の名は。",
+        			filesize: "4956720",
+        			containerformat: "MPEG-4",
+        			codec: "AAC",
+        			channel: 2,
+        			duration: 284.468,
+        			samplingrate: 44100,
+        			bitrate: 137808
+        		}]
+    		}]
+		});
+		$("#barDone").click(function(e){
+			ap.seek((ap.audio.currentTime * e.offsetX / this.offsetWidth).toFixed(6));
+		});
+		$("#barDo").click(function(e){
+			ap.seek(((ap.audio.duration - ap.audio.currentTime) * e.offsetX / this.offsetWidth + ap.audio.currentTime).toFixed(6));
+		});
+		ap.on('timeupdate', () => {
+			$('#barDone').attr('style','width: ' + ((ap.audio.currentTime / ap.audio.duration) * 100).toFixed(2) + '%');
+			$('#barCircle').attr('style','left: calc(' + ((ap.audio.currentTime / ap.audio.duration) * 100).toFixed(2) + '% - 2px)');
+			$('#barDo').attr('style','width: ' + ((1 - (ap.audio.currentTime / ap.audio.duration)) * 100).toFixed(2) + '%');
+			document.getElementById("timeDone").innerHTML = timeString(Math.floor(ap.audio.currentTime));
+			$('#aplayer-lrc-test').attr('style','width:' + $(".aplayer-lrc-current").width() + 'px');
+		});
+		ap.on("loadstart", () => {
+			const currentPlayMeta = ap.list.audios[ap.list.index];
+			document.getElementById("apName").innerHTML = '<span class="txt">' + currentPlayMeta.name + '</span><span class="title" data-title="' + currentPlayMeta.name + '">' + currentPlayMeta.name + '</span>';
+			document.getElementById("apArtist").innerHTML = '<span class="txt">' + currentPlayMeta.artist + '</span><span class="title" data-title="' + currentPlayMeta.artist + '">' + currentPlayMeta.artist + '</span>';
+			overflow();
+			document.getElementById('metadata').innerHTML = currentPlayMeta.metadata[0].containerformat + ' | ' + currentPlayMeta.metadata[0].codec + ' | ' + Math.floor(currentPlayMeta.metadata[0].bitrate/1000) + 'kbps | ' + currentPlayMeta.metadata[0].samplingrate + 'Hz';
+			if(currentPlayMeta.metadata[0].name != undefined){
+				document.getElementById('metadata-name').innerHTML = '名称：' + currentPlayMeta.metadata[0].name;
+			}else{
+				document.getElementById('metadata-name').innerHTML = '名称：未知';
+			};
+			if(currentPlayMeta.metadata[0].artist != undefined){
+				document.getElementById('metadata-artist').innerHTML = '作者：' + currentPlayMeta.metadata[0].artist;
+			}else{
+				document.getElementById('metadata-artist').innerHTML = '作者：未知';
+			};
+			if(currentPlayMeta.metadata[0].album != undefined){
+				document.getElementById('metadata-album').innerHTML = '专辑：' + currentPlayMeta.metadata[0].album;
+			}else{
+				document.getElementById('metadata-album').innerHTML = '专辑：未知';
+			};
+			if(currentPlayMeta.metadata[0].filesize != undefined){
+				document.getElementById('metadata-filesize').innerHTML = '大小：' + (currentPlayMeta.metadata[0].filesize/1000000).toFixed(2) + ' MB';
+			}else{
+				document.getElementById('metadata-filesize').innerHTML = '大小：未知';
+			};
+			if(currentPlayMeta.metadata[0].containerformat != undefined){
+				document.getElementById('metadata-containerformat').innerHTML = '容器格式：' + currentPlayMeta.metadata[0].containerformat;
+			}else{
+				document.getElementById('metadata-containerformat').innerHTML = '容器格式：未知';
+			};
+			if(currentPlayMeta.metadata[0].codec != undefined){
+				document.getElementById('metadata-codec').innerHTML = '编码格式：' + currentPlayMeta.metadata[0].codec;
+			}else{
+				document.getElementById('metadata-codec').innerHTML = '编码格式：未知';
+			};
+			if(currentPlayMeta.metadata[0].bitdepth != undefined){
+				document.getElementById('metadata-bitdepth').innerHTML = '位深：' + currentPlayMeta.metadata[0].bitdepth + ' bit';
+			}else{
+				document.getElementById('metadata-bitdepth').innerHTML = '位深：未知';
+			};
+			if(currentPlayMeta.metadata[0].channel != undefined){
+				document.getElementById('metadata-channel').innerHTML = '声道：' + currentPlayMeta.metadata[0].channel;
+			}else{
+				document.getElementById('metadata-channel').innerHTML = '声道：未知';
+			};
+			if(currentPlayMeta.metadata[0].duration != undefined){
+				document.getElementById('metadata-duration').innerHTML = '时长：' + timeString(Math.floor(currentPlayMeta.metadata[0].duration));
+			}else{
+				document.getElementById('metadata-duration').innerHTML = '时长：未知';
+			};
+			if(currentPlayMeta.metadata[0].samplingrate != undefined){
+				document.getElementById('metadata-samplingrate').innerHTML = '采样率：' + currentPlayMeta.metadata[0].samplingrate + ' Hz';
+			}else{
+				document.getElementById('metadata-samplingrate').innerHTML = '采样率：未知';
+			};
+			if(currentPlayMeta.metadata[0].bitrate != undefined){
+				document.getElementById('metadata-bitrate').innerHTML = '比特率：' + Math.floor(currentPlayMeta.metadata[0].bitrate/1000) + ' kbps';
+			}else{
+				document.getElementById('metadata-bitrate').innerHTML = '比特率：未知';
+			};
+			navigator.mediaSession.metadata = new MediaMetadata({
+				title: currentPlayMeta.name,
+				artist: currentPlayMeta.artist,
+				artwork: [{src: currentPlayMeta.cover + "@350w.webp", size: "350x350", type: "image/webp"}]
+			});
+			navigator.mediaSession.setActionHandler("previoustrack",function(){
+				ap.skipBack();
+			});
+			navigator.mediaSession.setActionHandler("nexttrack",function(){
+				ap.skipForward();
+			});
+			if(iconOrder){
+				if(ap.list.audios[ap.list.player.randomOrder[ap.list.player.randomOrder.indexOf(ap.list.index) + 1]] != undefined){
+					preload(ap.list.audios[ap.list.player.randomOrder[ap.list.player.randomOrder.indexOf(ap.list.index) + 1]].cover);
+				}else{
+					preload(ap.list.audios[ap.list.player.randomOrder[0]].cover);
+				};
+				if(ap.list.audios[ap.list.player.randomOrder[ap.list.player.randomOrder.indexOf(ap.list.index) - 1]] != undefined){
+					preload(ap.list.audios[ap.list.player.randomOrder[ap.list.player.randomOrder.indexOf(ap.list.index) - 1]].cover);
+				}else{
+					preload(ap.list.audios[ap.list.player.randomOrder[ap.list.player.randomOrder.length - 1]].cover);
+				};
+			}else{
+				if(ap.list.audios[ap.list.index + 1] != undefined){
+					preload(ap.list.audios[ap.list.index + 1].cover);
+				}else{
+					preload(ap.list.audios[0].cover);
+				};
+				if(ap.list.audios[ap.list.index - 1] != undefined){
+					preload(ap.list.audios[ap.list.index - 1].cover);
+				}else{
+					preload(ap.list.audios[ap.list.audios.length - 1].cover);
+				};
+			};
+		});
+		ap.on("loadedmetadata", () => {
+			const currentPlayMeta = ap.list.audios[ap.list.index];
+			if(apFlag){
+				ap.play();
+				$('#bgPic').attr('style','background: url("' + currentPlayMeta.cover + '") center center / cover no-repeat fixed black; transition: background .8s;');
+				$('#apPic').attr('style','background: url("' + currentPlayMeta.cover + '") center / cover no-repeat black; transition: background .8s;');
+			}else{
+				$('#bgPic').attr('style','background: url("' + currentPlayMeta.cover + '") center center / cover no-repeat fixed black;');
+				$('#apPic').attr('style','background: url("' + currentPlayMeta.cover + '") center / cover no-repeat black;');
+			};
+			apFlag = true;
+			document.getElementById("timeTotal").innerHTML = timeString(Math.floor(ap.audio.duration));
+			$('.aplayer-lrc-contents p').each(function(){
+				if(!$(this).html().includes('<br>(') && !$(this).html().includes(' - ') && !$(this).html().includes('：')){
+					$(this).html($(this).html().replace(/(.*) \(/, '$1<br>('));
+				};
+			});
+			$('#aplayer-lrc-test').attr('style','width:' + $(".aplayer-lrc-current").width() + 'px');
+			$('#aplayer-lrc-test').html($('.aplayer-lrc-current').html());
+		});
+		ap.on('play',function(){
+			document.getElementById("icon-play").innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 17 32"><path d="M14.080 4.8q2.88 0 2.88 2.048v18.24q0 2.112-2.88 2.112t-2.88-2.112v-18.24q0-2.048 2.88-2.048zM2.88 4.8q2.88 0 2.88 2.048v18.24q0 2.112-2.88 2.112t-2.88-2.112v-18.24q0-2.048 2.88-2.048z"></path></svg>';
+		});
+		ap.on('pause',function(){
+			document.getElementById("icon-play").innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 31"><path d="M15.552 15.168q0.448 0.32 0.448 0.832 0 0.448-0.448 0.768l-13.696 8.512q-0.768 0.512-1.312 0.192t-0.544-1.28v-16.448q0-0.96 0.544-1.28t1.312 0.192z"></path></svg>';
+		});
+		$("#aplayer").attr("class","aplayer aplayer-withlist aplayer-fixed");
+		$("#icon-play").click(function(){
+			if(ap.audio.paused){
+				ap.play();
+			}else{
+				ap.pause();
+			};
+		});
+		$("#icon-back").click(function(){
+			ap.skipBack()
+			ap.play();
+		});
+		$("#icon-forward").click(function(){
+			ap.skipForward();
+			ap.play();
+		});
+		$("#icon-lrc").click(function(){
+			ap.lrc.toggle();
+		});
+		$("#icon-volume-down").click(function(){
+			if(volumeNow > 0.1){
+				volumeNow = (volumeNow*10 - 1) / 10;
+			}else if(volumeNow == 0.1){
+				volumeNow = 0;
+				volumeLast = 0.1;
+			};
+			ap.volume(volumeNow, true);
+		});
+		$("#icon-volume-up").click(function(){
+			if(volumeNow < 1){
+				volumeNow = (volumeNow*10 + 1) / 10;
+			};
+			ap.volume(volumeNow, true);
+		});
+		ap.on('volumechange', () => {
+			$('#volumeBarDone').attr('style','width:' + volumeNow*100 + '%');
+			$('#volumeBarDo').attr('style','width:' + (100 - volumeNow*100) + '%');
+		});
+		$(document).keyup(function(event){
+			if(event.keyCode == 32){
+				$('#icon-play').trigger('click');
+			}else if(event.keyCode == 37){
+				$('#icon-back').trigger('click');
+			}else if(event.keyCode == 39){
+				$('#icon-forward').trigger('click');
+			}else if(event.keyCode == 76){
+				$('#icon-lrc').trigger('click');
+			}else if(event.keyCode == 77){
+				if(volumeNow != 0){
+					volumeLast = volumeNow;
+					volumeNow = 0;
+				}else{
+					volumeNow = volumeLast;
+				};
+				ap.volume(volumeNow, true);
+			}else if(event.keyCode == 80){
+				$('#icon-list').trigger('click');
+			};
+		});
+		$(document).keydown(function(event){
+			if(event.keyCode == 38){
+				$('#icon-volume-up').trigger('click');
+			}else if(event.keyCode == 40){
+				$('#icon-volume-down').trigger('click');
+			};
+		});
+		$("#icon-list").click(function(){
+			ap.list.toggle();
+			if(listFlag){
+				$("#icon-list svg").attr("style","");
+				listFlag = false;
+			}else{
+				$("#icon-list svg").attr("style","background-color: #8e8cd8; opacity: 1;");
+				listFlag = true;
+			};
+		});
+		$("#icon-order").click(function(){
+			$('.aplayer-icon-order').trigger('click');
+			if(iconOrder){
+				document.getElementById("icon-order").innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32"><path d="M0.622 18.334h19.54v7.55l11.052-9.412-11.052-9.413v7.549h-19.54v3.725z"></path></svg>';
+				if(ap.list.audios[ap.list.index + 1] != undefined){
+					preload(ap.list.audios[ap.list.index + 1].cover);
+				}else{
+					preload(ap.list.audios[0].cover);
+				};
+				if(ap.list.audios[ap.list.index - 1] != undefined){
+					preload(ap.list.audios[ap.list.index - 1].cover);
+				}else{
+					preload(ap.list.audios[ap.list.audios.length - 1].cover);
+				};
+				iconOrder = false;
+			}else{
+				document.getElementById("icon-order").innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32"><path d="M22.667 4l7 6-7 6 7 6-7 6v-4h-3.653l-3.76-3.76 2.827-2.827 2.587 2.587h2v-8h-2l-12 12h-6v-4h4.347l12-12h3.653v-4zM2.667 8h6l3.76 3.76-2.827 2.827-2.587-2.587h-4.347v-4z"></path></svg>';
+				if(ap.list.audios[ap.list.player.randomOrder[ap.list.player.randomOrder.indexOf(ap.list.index) + 1]] != undefined){
+					preload(ap.list.audios[ap.list.player.randomOrder[ap.list.player.randomOrder.indexOf(ap.list.index) + 1]].cover);
+				}else{
+					preload(ap.list.audios[ap.list.player.randomOrder[0]].cover);
+				};
+				if(ap.list.audios[ap.list.player.randomOrder[ap.list.player.randomOrder.indexOf(ap.list.index) - 1]] != undefined){
+					preload(ap.list.audios[ap.list.player.randomOrder[ap.list.player.randomOrder.indexOf(ap.list.index) - 1]].cover);
+				}else{
+					preload(ap.list.audios[ap.list.player.randomOrder[ap.list.player.randomOrder.length - 1]].cover);
+				};
+				iconOrder = true;
+			};
+		});
+		$("#icon-loop").click(function(){
+			$('.aplayer-icon-loop').trigger('click');
+			if(iconLoop == 0){
+				document.getElementById("icon-loop").innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 33 32"><path d="M9.333 9.333h13.333v4l5.333-5.333-5.333-5.333v4h-16v8h2.667v-5.333zM22.667 22.667h-13.333v-4l-5.333 5.333 5.333 5.333v-4h16v-8h-2.667v5.333zM17.333 20v-8h-1.333l-2.667 1.333v1.333h2v5.333h2z"></path></svg>';
+				iconLoop = 1;
+			}else if(iconLoop == 1){
+				document.getElementById("icon-loop").innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 29 32"><path d="M2.667 7.027l1.707-1.693 22.293 22.293-1.693 1.707-4-4h-11.64v4l-5.333-5.333 5.333-5.333v4h8.973l-8.973-8.973v0.973h-2.667v-3.64l-4-4zM22.667 17.333h2.667v5.573l-2.667-2.667v-2.907zM22.667 6.667v-4l5.333 5.333-5.333 5.333v-4h-10.907l-2.667-2.667h13.573z"></path></svg>';
+				iconLoop = 2;
+			}else{
+				document.getElementById("icon-loop").innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 29 32"><path d="M9.333 9.333h13.333v4l5.333-5.333-5.333-5.333v4h-16v8h2.667v-5.333zM22.667 22.667h-13.333v-4l-5.333 5.333 5.333 5.333v-4h16v-8h-2.667v5.333z"></path></svg>';
+				iconLoop = 0;
+			};
+		});
+		$(document).ready(function(){
+			$(window).resize(function(){
+				overflow();
+			});
+		});
+		</script>
+	</body>
 </html>
