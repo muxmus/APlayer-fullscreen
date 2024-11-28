@@ -33,8 +33,9 @@ class Lrc {
             for (let i = 0; i < this.current.length; i++) {
                 if (currentTime >= this.current[i][0] && (!this.current[i + 1] || currentTime < this.current[i + 1][0])) {
                     this.index = i;
-                    this.container.style.transform = `translateY(${-this.index * 16}px)`;
-                    this.container.style.webkitTransform = `translateY(${-this.index * 16}px)`;
+                    $('#aplayer-lrc-test').html($(".aplayer-lrc-current").html());
+                    this.container.style.transform="translateY("+(96-Math.floor($(".aplayer-lrc-contents p:nth-child("+(this.index+1)+")").position().top)+($(".aplayer-lrc-current").height()-$("#aplayer-lrc-test").height())*(this.index>lrcNow))+"px)";
+                    this.container.style.webkitTransform="translateY("+(96-Math.floor($(".aplayer-lrc-contents p:nth-child("+(this.index+1)+")").position().top)+($(".aplayer-lrc-current").height()-$("#aplayer-lrc-test").height())*(this.index>lrcNow))+"px)";
                     this.container.getElementsByClassName('aplayer-lrc-current')[0].classList.remove('aplayer-lrc-current');
                     this.container.getElementsByTagName('p')[i].classList.add('aplayer-lrc-current');
                 }
